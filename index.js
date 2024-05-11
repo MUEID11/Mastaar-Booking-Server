@@ -27,26 +27,27 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const services = client.db('allservices').collection('services');
-    const bookServices = client.db('allservices').collection('bookservices');
-    //get teaching services 
-    app.get('/services', async(req, res) =>{
-        const result = await services.find().limit(6).toArray();
-        res.send(result);
-    })
-    app.get('/allservices', async(req, res) =>{
-        const result = await services.find().toArray();
-        res.send(result);
-    })
+    const services = client.db("allservices").collection("services");
+    const bookServices = client.db("allservices").collection("bookservices");
+    //get teaching services
+    app.get("/services", async (req, res) => {
+      const result = await services.find().limit(6).toArray();
+      res.send(result);
+    });
+    app.get("/allservices", async (req, res) => {
+      const result = await services.find().toArray();
+      res.send(result);
+    });
     //get single services
-    app.get('/service/:id', async(req, res) => {
-        const id = req.params.id;
-        const result = await services.findOne({_id: new ObjectId(id)});
-        res.send(result);
-    })
-    app.get('/services/:email' async(req, res) => {
-        const
-    })
+    app.get("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await services.findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+    app.get("/serviceprovider/:email", async (req, res) => {
+      const email = req.body;
+      res.send(email);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
