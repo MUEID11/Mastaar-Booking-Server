@@ -48,6 +48,18 @@ async function run() {
       const email = req.body;
       res.send(email);
     });
+    //send data in collection
+    app.post('/bookservice', async(req, res)=>{
+        const bookData = req.body;
+        const result = await bookServices.insertOne(bookData);
+        res.send(result);
+    });
+    //add services
+    app.post('/addservices', async(req, res) => {
+        const serviceData = req.body;
+        const result = await services.insertOne(serviceData);
+        res.send(result);
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
