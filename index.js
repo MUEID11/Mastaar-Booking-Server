@@ -44,22 +44,76 @@ async function run() {
       const result = await services.findOne({ _id: new ObjectId(id) });
       res.send(result);
     });
+    //get services of user
     app.get("/serviceprovider/:email", async (req, res) => {
-      const email = req.body;
-      res.send(email);
+      const email = req.params.email;
+      const result = await services.find({ providerEmail: email }).toArray();
+      res.send(result);
     });
     //send data in collection
-    app.post('/bookservice', async(req, res)=>{
-        const bookData = req.body;
-        const result = await bookServices.insertOne(bookData);
-        res.send(result);
+    app.post("/bookservice", async (req, res) => {
+      const bookData = req.body;
+      const result = await bookServices.insertOne(bookData);
+      res.send(result);
+    });
+    //get book services
+    app.get("/bookedservices/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await bookServices.find({ buyerEmail: email }).toArray();
+      res.send(result);
     });
     //add services
-    app.post('/addservices', async(req, res) => {
-        const serviceData = req.body;
-        const result = await services.insertOne(serviceData);
-        res.send(result);
-    })
+    app.post("/addservices", async (req, res) => {
+      const serviceData = req.body;
+      const result = await services.insertOne(serviceData);
+      res.send(result);
+    });
+    //delete service
+    app.delete("/delete/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await services.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+      console.log(result);
+    });
+    //update service
+    app.put("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const serviceData = req.body;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateService = {
+        $set: {
+          ...serviceData,
+        },
+      };
+      const result = await services.updateOne(query, updateService, options);
+      res.send(result);
+    });
+    //service todo
+    app.get("/todoservice/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await bookServices
+        .find({ providerEmail: email })
+        .toArray();
+      res.send(result);
+    });
+    //update todo status
+    app.patch("/updatestatus/:id", async (req, res) => {
+      const id = req.params.id;
+      const serviceStatus = req.body;
+      console.log(serviceStatus, id);
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateService = {
+        $set: { ...serviceStatus },
+      };
+      const result = await bookServices.updateOne(
+        query,
+        updateService,
+        options
+      );
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
