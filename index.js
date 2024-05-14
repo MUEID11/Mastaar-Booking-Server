@@ -12,8 +12,8 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
-    "b9-assignment11-client.web.app",
-    "b9-assignment11-client.firebaseapp.com",
+    "https://b9-assignment11-client.web.app",
+    "https://b9-assignment11-client.firebaseapp.com",
   ],
   credentials: true,
   //   optionSuccessStatus: 200,
@@ -54,7 +54,6 @@ async function run() {
     //jwt generate
     app.post("/jwt", async (req, res) => {
       const user = req.body;
-      console.log(user);
       const token = jwt.sign(user, process.env.SECRET_ACCESS_TOKEN, {
         expiresIn: "7d",
       });
@@ -79,11 +78,11 @@ async function run() {
     });
     //get teaching services
     app.get("/teacher", async (req, res) => {
-        const result = await services.find().toArray();
-        const shuffledResult = result.sort(() => Math.random() - 0.5);
-        const teachersToDisplay = shuffledResult.slice(0, 8);
-        res.send(teachersToDisplay);
-      });
+      const result = await services.find().toArray();
+      const shuffledResult = result.sort(() => Math.random() - 0.5);
+      const teachersToDisplay = shuffledResult.slice(0, 8);
+      res.send(teachersToDisplay);
+    });
     //
 
     app.get("/services", async (req, res) => {
@@ -108,25 +107,24 @@ async function run() {
     });
     //get services of user
     app.get("/serviceprovider/:email", verifyToken, async (req, res) => {
-      const tokenEmail = req.user.email;
-      const email = req.params.email;
-      if (tokenEmail !== email) {
-        return res.status(403).send({ message: "Forbiden access" });
-      }
+        const email = req.params.email;
+        const tokenEmail = req.user.email;
+        console.log(email, tokenEmail);
+        if (tokenEmail !== email) {
+          return res.status(403).send({ message: "Forbiden access" });
+        }
       const result = await services.find({ providerEmail: email }).toArray();
       res.send(result);
     });
     //send data in collection
     app.post("/bookservice", verifyToken, async (req, res) => {
       const bookData = req.body;
-      console.log(bookData);
       //duplicate booking validation
       const query = {
         buyerEmail: bookData.buyerEmail,
         serviceId: bookData.serviceId,
       };
       const alreadyBooked = await bookServices.findOne(query);
-      console.log(query);
       if (alreadyBooked) {
         return res.status(400).send("Already Booked the service");
       }
@@ -172,8 +170,8 @@ async function run() {
     });
     //service todo
     app.get("/todoservice/:email", verifyToken, async (req, res) => {
-      const tokenEmail = req.user.email;
       const email = req.params.email;
+      const tokenEmail = req.user.email;
       if (tokenEmail !== email) {
         return res.status(403).send({ message: "Forbiden access" });
       }
