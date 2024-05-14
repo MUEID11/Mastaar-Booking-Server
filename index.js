@@ -78,14 +78,24 @@ async function run() {
         .send({ success: true });
     });
     //get teaching services
+    app.get("/teacher", async (req, res) => {
+        const result = await services.find().toArray();
+        const shuffledResult = result.sort(() => Math.random() - 0.5);
+        const teachersToDisplay = shuffledResult.slice(0, 8);
+        res.send(teachersToDisplay);
+      });
+    //
+
     app.get("/services", async (req, res) => {
-      const result = await services.find().limit(6).toArray();
-      res.send(result);
+      const result = await services.find().toArray();
+      const shuffledResult = result.sort(() => Math.random() - 0.5);
+      const servicesToDisplay = shuffledResult.slice(0, 6);
+      res.send(servicesToDisplay);
     });
     app.get("/allservices", async (req, res) => {
       const search = req.query.search;
       let query = {
-        name: { $regex: search, $options: "i" },
+        name: { $regex: String(search), $options: "i" },
       };
       const result = await services.find(query).toArray();
       res.send(result);
