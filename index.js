@@ -78,7 +78,11 @@ async function run() {
       res.send(result);
     });
     app.get("/allservices", async (req, res) => {
-      const result = await services.find().toArray();
+      const search = req.query.search;
+      let query = {
+        name: { $regex: search, $options: "i" },
+      };
+      const result = await services.find(query).toArray();
       res.send(result);
     });
     //get single services
