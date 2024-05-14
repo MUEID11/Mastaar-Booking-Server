@@ -9,7 +9,12 @@ const port = process.env.PORT || 5000;
 //middleware
 const app = express();
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "b9-assignment11-client.web.app",
+    "b9-assignment11-client.firebaseapp.com",
+  ],
   credentials: true,
   //   optionSuccessStatus: 200,
 };
